@@ -11,7 +11,7 @@ def test_basic_logging(capsys):
 
 def test_indentation(capsys):
     logger = IndentedLogger()
-    logger.indent()
+    logger.indent(2)
     logger.log("Indented message")
     captured = capsys.readouterr()
     assert captured.out.strip() == "  Indented message"
@@ -60,7 +60,7 @@ def test_dedent_not_below_base_indent(capsys):
 
 def test_non_string_logging(capsys):
     logger = IndentedLogger()
-    logger.indent()
+    logger.indent(2)
     logger.log(42)
     captured = capsys.readouterr()
     assert captured.out.strip() == "  42"
