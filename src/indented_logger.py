@@ -7,6 +7,7 @@ class IndentedLogger:
         """
         self.base_indent = base_indent
         self.current_indent = base_indent
+        self.indent_cache = 0
 
     def log(self, message):
         """
@@ -15,14 +16,11 @@ class IndentedLogger:
         :param message: The message to log
         :return: The indented log message
         """
-        # Explicitly use integer indentation
-        # And enforce 2-space or base_indent rule
-        indent_spaces = max(self.base_indent, self.current_indent)
-        try:
-            print(" " * indent_spaces + str(message))
-        except Exception as e:
-            print(f"Error in log: {e}")
-        return (" " * indent_spaces + str(message)).rstrip()
+        # Use the cached indent to ensure consistent indentation
+        current_indent = max(self.base_indent, self.indent_cache)
+        indented_message = " " * current_indent + str(message)
+        print(indented_message)
+        return indented_message
 
     def indent(self, spaces=2):
         """
@@ -30,7 +28,7 @@ class IndentedLogger:
         
         :param spaces: Number of spaces to increase indentation by (default 2)
         """
-        self.current_indent += spaces
+        self.indent_cache += spaces
 
     def dedent(self, spaces=2):
         """
@@ -38,10 +36,10 @@ class IndentedLogger:
         
         :param spaces: Number of spaces to decrease indentation by (default 2)
         """
-        self.current_indent = max(self.base_indent, self.current_indent - spaces)
+        self.indent_cache = max(self.base_indent, self.indent_cache - spaces)
 
     def reset_indent(self):
         """
         Reset indentation to the base level.
         """
-        self.current_indent = self.base_indent
+        self.indent_cache = self.base_indent

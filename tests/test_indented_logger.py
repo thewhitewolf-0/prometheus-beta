@@ -7,15 +7,13 @@ def test_basic_logging(capsys):
     logger = IndentedLogger()
     logger.log("Test message")
     captured = capsys.readouterr()
-    print(f"Basic: '{captured.out.strip()}'")  # Debug
     assert captured.out.strip() == "Test message"
 
 def test_indentation(capsys):
     logger = IndentedLogger()
-    logger.indent(2)
+    logger.indent()
     logger.log("Indented message")
     captured = capsys.readouterr()
-    print(f"Indentation: '{captured.out.strip()}'")  # Debug
     assert captured.out.strip() == "  Indented message"
 
 def test_multiple_indents(capsys):
@@ -23,14 +21,12 @@ def test_multiple_indents(capsys):
     logger.indent(4)
     logger.log("Deeply indented")
     captured = capsys.readouterr()
-    print(f"Multiple Indents: '{captured.out.strip()}'")  # Debug
     assert captured.out.strip() == "    Deeply indented"
 
 def test_base_indent(capsys):
     logger = IndentedLogger(base_indent=2)
     logger.log("Base indented")
     captured = capsys.readouterr()
-    print(f"Base Indent: '{captured.out.strip()}'")  # Debug
     assert captured.out.strip() == "  Base indented"
 
 def test_dedent(capsys):
@@ -41,7 +37,6 @@ def test_dedent(capsys):
     logger.log("Less indented")
     captured = capsys.readouterr()
     lines = captured.out.strip().split('\n')
-    print(f"Dedent lines: {lines}")  # Debug
     assert lines[0] == "    Deeply indented"
     assert lines[1] == "  Less indented"
 
@@ -53,7 +48,6 @@ def test_reset_indent(capsys):
     logger.log("Back to base")
     captured = capsys.readouterr()
     lines = captured.out.strip().split('\n')
-    print(f"Reset Indent lines: {lines}")  # Debug
     assert lines[0] == "      Deeply indented"
     assert lines[1] == "  Back to base"
 
@@ -62,13 +56,11 @@ def test_dedent_not_below_base_indent(capsys):
     logger.dedent()
     logger.log("Should stay at base")
     captured = capsys.readouterr()
-    print(f"Dedent Base: '{captured.out.strip()}'")  # Debug
     assert captured.out.strip() == "  Should stay at base"
 
 def test_non_string_logging(capsys):
     logger = IndentedLogger()
-    logger.indent(2)
+    logger.indent()
     logger.log(42)
     captured = capsys.readouterr()
-    print(f"Non-string: '{captured.out.strip()}'")  # Debug
     assert captured.out.strip() == "  42"
