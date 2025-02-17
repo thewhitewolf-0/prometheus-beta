@@ -1,6 +1,6 @@
-import pytest
-from io import StringIO
+import io
 import sys
+import pytest
 from src.indented_logger import IndentedLogger
 
 def test_basic_logging(capsys):
@@ -30,6 +30,7 @@ def test_base_indent(capsys):
     assert captured.out.strip() == "  Base indented"
 
 def test_dedent(capsys):
+    # Redirect stdout to a StringIO object
     logger = IndentedLogger()
     logger.indent(4)
     logger.log("Deeply indented")
