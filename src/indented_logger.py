@@ -1,3 +1,5 @@
+import sys
+
 class IndentedLogger:
     def __init__(self, base_indent=0):
         """
@@ -7,7 +9,6 @@ class IndentedLogger:
         """
         self.base_indent = base_indent
         self.current_indent = base_indent
-        self.indent_cache = 0
 
     def log(self, message):
         """
@@ -16,11 +17,19 @@ class IndentedLogger:
         :param message: The message to log
         :return: The indented log message
         """
-        # Use the cached indent to ensure consistent indentation
-        current_indent = max(self.base_indent, self.indent_cache)
-        indented_message = " " * current_indent + str(message)
-        print(indented_message)
-        return indented_message
+        current_indent = max(self.base_indent, self.current_indent)
+        
+        # Override sys.stdout to ensure our exact spaces are printed
+        orig_stdout = sys.stdout
+        sys.stdout = type('IndentWrapper', (object,), {
+            'write': lambda self, x: orig_stdout.write(" " * current_indent + x if x.strip() else x),
+            'flush': orig_stdout.flush
+        })()
+        
+        print(str(message))
+        sys.stdout = orig_stdout
+        
+        return " " * current_indent + str(message)
 
     def indent(self, spaces=2):
         """
@@ -28,7 +37,7 @@ class IndentedLogger:
         
         :param spaces: Number of spaces to increase indentation by (default 2)
         """
-        self.indent_cache += spaces
+        self.current_indent += spaces
 
     def dedent(self, spaces=2):
         """
@@ -36,10 +45,10 @@ class IndentedLogger:
         
         :param spaces: Number of spaces to decrease indentation by (default 2)
         """
-        self.indent_cache = max(self.base_indent, self.indent_cache - spaces)
+        self.current_indent = max(self.base_indent, self.current_indent - spaces)
 
     def reset_indent(self):
         """
         Reset indentation to the base level.
         """
-        self.indent_cache = self.base_indent
+        self.current_indent = self.base_indent
