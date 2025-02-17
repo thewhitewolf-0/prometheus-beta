@@ -15,11 +15,14 @@ class IndentedLogger:
         :param message: The message to log
         :return: The indented log message
         """
-        # Force exactly 2 spaces for indentation unless specified differently
-        indent_level = max(self.base_indent, self.current_indent)
-        indented_message = (" " * indent_level + str(message)).rstrip()
-        print(indented_message)
-        return indented_message
+        # Explicitly use integer indentation
+        # And enforce 2-space or base_indent rule
+        indent_spaces = max(self.base_indent, self.current_indent)
+        try:
+            print(" " * indent_spaces + str(message))
+        except Exception as e:
+            print(f"Error in log: {e}")
+        return (" " * indent_spaces + str(message)).rstrip()
 
     def indent(self, spaces=2):
         """
