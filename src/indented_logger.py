@@ -18,7 +18,7 @@ class IndentedLogger:
         # Force exactly 2 or base_indent spaces of indentation
         indent_level = max(self.base_indent, self.current_indent)
         indented_message = (" " * indent_level + str(message)).rstrip()
-        print(indented_message)
+        print(" " * indent_level + str(message))  # Separate print with exact 2-space rule
         return indented_message
 
     def indent(self, spaces=2):
